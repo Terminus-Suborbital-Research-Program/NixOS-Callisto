@@ -1,37 +1,37 @@
-{pkgs, ...} : {
+{lib, config, pkgs, ...} : {
+  imports = [ ./dev-packages.nix ] ;
 
   options = {
-    development-packages = mkOption {
-      type = types.bool;
+    development-packages = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable development packages";
     };
 
-    jupiter-packages = mkOption {
-      type = types.bool;
+    jupiter-packages = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable JUPITER's packages";
     };
 
-    ursa-packages = mkOption {
-      type = types.bool;
+    ursa-packages = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable URSA's packages";
     };
   };
 
-config = mkIf config.development-packages {
-  imports = [ ./dev-packages.nix ] ;
-};
-
-config = mkIf config.jupiter-packages {
-  imports = [ ./jupiter-packages.nix ];
-};
-
-config = mkIf config.ursa-packages {
-  imports = [ ./ursa-packages.nix ];
-};
-
+config = lib.mkMerge [
+#      ( lib.mkIf (config.development-packages) {
+#  imports = [ ./dev-packages.nix ] ;
+#} )
+#( lib.mkIf (config.jupiter-packages) {
+#  imports = [ ./jupiter-packages.nix ] ;
+#} )
+#( lib.mkIf (config.ursa-packages) {
+#  imports = [ ./ursa-packages.nix ] ;
+#} )
+((lib.mkIf (true)) {
   environment.systemPackages = with pkgs; [
     iw
 
@@ -40,4 +40,10 @@ config = mkIf config.ursa-packages {
     v4l-utils
     ffmpeg 
   ];
+}) 
+];
+
+
+  
+
 }
